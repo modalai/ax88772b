@@ -2,7 +2,7 @@ CURRENT	= $(shell uname -r)
 TARGET	= asix
 OBJS	= asix.o
 MDIR	= drivers/net/usb
-#KDIR	= /lib/modules/$(CURRENT)/build
+KDIR	= /lib/modules/$(CURRENT)/build
 CC	:= gcc
 SUBLEVEL= $(shell uname -r | cut -d '.' -f 3 | cut -d '.' -f 1 | cut -d '-' -f 1 | cut -d '_' -f 1)
 
@@ -16,11 +16,11 @@ DEST = /lib/modules/$(CURRENT)/kernel/$(MDIR)
 obj-m      := $(TARGET).o
 
 default:
-#make -C $(KDIR) M=$(PWD) modules
-#$(CC) ioctl.c -o ioctl
+	make -C $(KDIR) M=$(PWD) modules
+	$(CC) ioctl.c -o ioctl
 
-	$(TARGET).o: $(OBJS)
-		$(LD) $(LD_RFLAG) -r -o $@ $(OBJS)
+$(TARGET).o: $(OBJS)
+	$(LD) $(LD_RFLAG) -r -o $@ $(OBJS)
 
 install:
 	su -c "cp -v $(TARGET).ko $(DEST) && /sbin/depmod -a"
@@ -31,4 +31,4 @@ clean:
 
 .PHONY: modules clean
 
-#-include $(KDIR)/Rules.make
+-include $(KDIR)/Rules.make
